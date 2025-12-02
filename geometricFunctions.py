@@ -1,6 +1,8 @@
 import numpy as np
 import math
 
+from numericClasses import Panel
+
 def yt_4digit(x, t):
 
     t=t/100
@@ -119,3 +121,62 @@ def naca(m, p, t, x):
         yl = yc(m, p , t, x) - yt_4digit(x, t)*math.cos(theta(m, p, t, x))
 
     return xu, yu, xl, yl
+
+def upperAndLower(x: list, y: list) -> list:
+
+    i = 0
+    xUp = []
+    yUp = []
+    xDwn = []
+    yDwn = []
+
+    while x[i] > x[i+1]:
+        xUp.append(x[i])
+        yUp.append(y[i])
+        i += 1
+
+    xDwn.append(xUp[len(xUp)-1])
+    yDwn.append(yUp[len(yUp)-1])
+
+    while x[i] < x[i+1]:
+        xDwn.append(x[i])
+        yDwn.append(y[i])
+        i += 1
+        if i == len(x)-1:
+            break
+
+    xDwn.append(xUp[0])
+    yDwn.append(yUp[0])
+
+    return xUp, yUp, xDwn, yDwn
+
+def divideCp(panels: list[Panel], cp:list):
+
+    #panels.reverse()
+
+    x = [pn.control_point.x for pn in panels]
+    y = [pn.control_point.y for pn in panels]
+
+    xu, yu, xl, yl = upperAndLower(x, y)
+
+    #cp.reverse()
+
+    i = 0
+    cpUp = []
+    cpL = []
+
+    while x[i] > x[i+1]:
+        cpUp.append(cp[i])    
+        i += 1
+
+    cpL.append(cpUp[len(cpUp)-1])
+
+    while x[i] < x[i+1]:
+        cpL.append(cp[i])
+        i += 1
+        if i == len(x)-1:
+            break
+
+    cpL.append(cpUp[0])
+
+    return xu, yu, xl, yl, cpUp, cpL
