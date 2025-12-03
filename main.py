@@ -2,7 +2,7 @@ from geometricFunctions import naca4_airfoil_xy, upperAndLower, divideCp
 from numericFunctions import define_panels
 from linearSystem import computeLambdasVortex, computeTangentVelocityVortex
 from coeficients import computeCp, computeCl
-from velocityCalculations import vInf
+from velocityCalculations import vInf, takeOffVelocity
 from posProcessing import Solution, plot_family, plot_painels_numerados
 from utils import computeSolution
 import matplotlib.pyplot as plt
@@ -64,9 +64,34 @@ def main():
 
     # beleza, integração do coeficiente de sustentação funcionando
 
+    
+
     return
 
 
 
 if __name__ == "__main__":
-    main()
+
+    #================== CESNA 150 DATA ======================
+    S = 15                      # AREA IN M^2
+    W = 4380                    # WEIGHT IN NEWTONS
+    rho = 1.2                   # DENSITY IN KILOGRAMS PER CUBIC METER
+    m, p, t = 2, 4, 12          # NACA 2412 AS ANDERSON
+    alpha = 5                   # ATTACK ANGLE
+    N = 200                     # NUMBER OF POINTS OF GEOMETRIC DISCRETIZATION OF AIRFOILS
+    NP = 40                     # NUMBER OF PANES
+    
+    #================= VORTEX PANE METHOD ====================
+    s = computeSolution(m, p, t, N, NP, alpha)
+    cp = s.Cp
+    panels = s.panel_list
+
+    #======================== Cl =============================
+    cl = computeCl(panels, cp, alpha)
+
+    #===================== TAKEOFF VELOCITY ==================
+    vtoff = takeOffVelocity(W, cl, rho, S)
+
+    print(f"TAKE OFF VELOCITY IS: {vtoff} m/s")
+    print(f"TAKE OFF VELOCITY IS: {vtoff*3.6} KM/H")
+

@@ -83,3 +83,6 @@ def computeVelocityComponent2(paneli: Panel, panelj: Panel):
     v = V.u*t.y - V.v*n.y
 
     return Velocity(u, v)
+
+def takeOffVelocity(weight, cl, rho, S):
+    return math.sqrt(2*weight/(cl*rho*S))
